@@ -1,0 +1,47 @@
+module main::rascal::Plugin
+
+import IO;
+import ParseTree;
+import util::Reflective;
+import util::IDEServices;
+import util::LanguageServer;
+import Relation;
+
+import main::rascal::Syntax;
+import main::rascal::Checker;
+import main::rascal::Generator4;
+
+PathConfig pcfg = getProjectPathConfig(|project://rascaldsl|);
+Language tdslLang = language(pcfg, "TDSL", "tdsl", "main::rascal::Plugin", "contribs");
+
+data Command = gen4(Planning p);
+
+set[LanguageService] contribs() = {
+    parser(start[Planning] (str program, loc src) {
+        return parse(#start[Planning], program, src);
+    }),
+    lenses(rel[loc src, Command lens] (start[Planning] p) {
+        return {
+            <p.src, gen4(p.top, title="Generate text file")>
+        };
+    }),
+    summarizer(Summary (loc _, start[Planning] p) {
+        return check(p.top);
+    }),
+    executor(exec)
+};
+
+value exec(gen4(Planning p)) {
+    rVal = generator4(p);
+    outputFile = |project://rascaldsl/instance/output/generator4.txt|; 
+    writeFile(outputFile, rVal);
+    edit(outputFile);
+    return ("result": true);
+}
+
+void main() {
+    registerLanguage(tdslLang);
+}
+
+
+
