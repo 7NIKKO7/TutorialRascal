@@ -3,12 +3,12 @@ module main::rascal::Generator4
 import IO;
 import Set;
 import List;
-// import main::rascal::AST;
+//import main::rascal::AST;
 import main::rascal::Syntax;
 import String;
 
 import main::rascal::Parser;
-// import main::rascal::Implode;
+//import main::rascal::Implode;
 
 
 str generator4(cst) {

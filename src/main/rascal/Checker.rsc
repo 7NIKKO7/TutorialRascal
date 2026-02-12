@@ -1,8 +1,7 @@
 module main::rascal::Checker
 
 import main::rascal::Syntax;
- 
-//extend analysis::typepal::TypePal;
+extend analysis::typepal::TypePal;
 import ParseTree;
 import String;
 
